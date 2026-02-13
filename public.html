@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>MotoServiceStory – Historia pojazdu</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+body {
+  margin: 0;
+  padding: 40px 20px;
+  font-family: system-ui, sans-serif;
+  max-width: 600px;
+  margin-inline: auto;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.card {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 8px;
+  border: none;
+  background: black;
+  color: white;
+  cursor: pointer;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+textarea {
+  min-height: 80px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Historia serwisowa</h1>
+
+<div id="vehicleInfo" class="card"></div>
+
+<div id="history" class="card"></div>
+
+<div class="card">
+  <h3>Dodaj wpis</h3>
+  <input type="text" id="type" placeholder="Typ (np. olej, opony)">
+  <input type="number" id="mileage" placeholder="Przebieg">
+  <textarea id="note" placeholder="Notatka"></textarea>
+  <button onclick="addEntry()">Zapisz wpis</button>
+  <p id="status"></p>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://thmcpoehpycqfbgpdjyf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRobWNwb2VocHljcWZiZ3BkanlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Njc5NTYsImV4cCI6MjA4NDQ0Mzk1Nn0.m4CHKbi6nDSlY_WZdiCZCXKt97tY9uICsbAGSvYHFBw'; // <- wklej swój
+
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+const params = new URLSearchParams(window.location.search);
+const token = params.get("token");
+
+let vehicleId = null;
+
+async function init() {
+
+  if (!token) {
+    document.body.innerHTML = "<h2>Brak tokenu</h2>";
+    return;
+  }
+
+  const { data: vehicle } = await db
+    .from("vehicles")
+    .select("*")
+    .eq("public_token", token)
+    .single();
+
+  if (!vehicle) {
+    document.body.innerHTML = "<h2>Nie znaleziono pojazdu</h2>";
+    return;
+  }
+
+  vehicleId = vehicle.id;
+
+  document.getElementById("vehicleInfo").innerHTML = `
+    <b>${vehicle.name}</b><br>
+    Aktualny przebieg: ${vehicle.current_mileage} km
+  `;
+
+  loadHistory();
+}
+
+async function loadHistory() {
+
+  const { data } = await db
+    .from("service_reports")
+    .select("*")
+    .eq("vehicle_id", vehicleId)
+    .order("date", { ascending: false });
+
+  const historyDiv = document.getElementById("history");
+
+  if (!data || data.length === 0) {
+    historyDiv.innerHTML = "<i>Brak wpisów</i>";
+    return;
+  }
+
+  historyDiv.innerHTML = data.map(r => `
+    <div style="margin-bottom:12px;">
+      <b>${r.date}</b> – ${r.type} (${r.mileage || "-"} km)<br>
+      ${r.note || ""}
+    </div>
+  `).join("");
+}
+
+async function addEntry() {
+
+  const type = document.getElementById("type").value;
+  const mileage = document.getElementById("mileage").value;
+  const note = document.getElementById("note").value;
+
+  if (!type) {
+    alert("Podaj typ wpisu");
+    return;
+  }
+
+  const res = await fetch(
+    `${SUPABASE_URL}/functions/v1/add-public-entry`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": SUPABASE_KEY
+      },
+      body: JSON.stringify({
+        token,
+        type,
+        mileage,
+        note
+      })
+    }
+  );
+
+  if (!res.ok) {
+    document.getElementById("status").innerText = "Błąd zapisu";
+    return;
+  }
+
+  document.getElementById("status").innerText = "Zapisano ✔";
+  document.getElementById("type").value = "";
+  document.getElementById("mileage").value = "";
+  document.getElementById("note").value = "";
+
+  loadHistory();
+}
+
+init();
+</script>
+
+</body>
+</html>
