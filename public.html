@@ -139,12 +139,16 @@ button {
 <script>
 const SUPABASE_URL = 'https://thmcpoehpycqfbgpdjyf.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRobWNwb2VocHljcWZiZ3BkanlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Njc5NTYsImV4cCI6MjA4NDQ0Mzk1Nn0.m4CHKbi6nDSlY_WZdiCZCXKt97tY9uICsbAGSvYHFBw';
+
 const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const params = new URLSearchParams(window.location.search);
 const token = params.get("token");
 
 let vehicleId = null;
+
+// Łapiemy element status JEDEN RAZ
+const statusEl = document.getElementById("status");
 
 async function init() {
 
@@ -187,7 +191,7 @@ async function loadHistory() {
 
 async function addEntry() {
 
-  status.innerText = "Zapisywanie...";
+  statusEl.innerText = "Zapisywanie...";
 
   try {
 
@@ -212,21 +216,18 @@ async function addEntry() {
 
     const text = await res.text();
 
-    console.log("STATUS:", res.status);
-    console.log("BODY:", text);
-
     if (!res.ok) {
-      status.innerText = text || "Błąd zapisu";
+      statusEl.innerText = text || "Błąd zapisu";
       return;
     }
 
-    status.innerText = "Zapisano ✔";
+    statusEl.innerText = "Zapisano ✔";
     type.value = mileage.value = date.value = note.value = title.value = "";
     loadHistory();
 
   } catch (err) {
     console.error(err);
-    status.innerText = "Błąd połączenia";
+    statusEl.innerText = "Błąd połączenia";
   }
 }
 
@@ -237,6 +238,7 @@ function showTab(tab) {
 
 init();
 </script>
+
 
 
 </body>
