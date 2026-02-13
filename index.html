@@ -3,10 +3,549 @@
 <head>
 <meta charset="UTF-8">
 <title>Moto Historia</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+
+:root {
+  --black-deep: #010203;
+  --black-soft: #070a0e;
+  --panel-bg: rgba(14, 18, 22, 0.92);
+
+  --accent: #7f9db4;
+  --accent-soft: #5f7688;
+
+  --text-main: #e6ebef;
+  --text-muted: #aab3bb;
+  --text-soft: #7f8891;
+
+  --line-soft: rgba(255,255,255,0.06);
+
+  --warn-bg: rgba(180,140,40,0.12);
+  --warn-border: rgba(180,140,40,0.35);
+
+  --danger-bg: rgba(160,60,60,0.18);
+  --danger-border: rgba(160,60,60,0.45);
+}
+
+/* ================================================= */
+/* BODY / BACKGROUND */
+/* ================================================= */
+body {
+  margin: 0;
+  padding: 40px 22px 72px;
+  max-width: 420px;
+  margin-inline: auto;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: var(--text-main);
+
+  background:
+    radial-gradient(140% 70% at 50% -25%, rgba(140,180,210,0.07), transparent 60%),
+    linear-gradient(135deg, #010203 0%, #04070b 40%, #010203 80%);
+  background-color: var(--black-deep);
+  background-attachment: fixed;
+}
+
+/* ORGANIC WAVES */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -30%;
+  background:
+    linear-gradient(120deg, transparent 35%, rgba(255,255,255,0.05) 50%, transparent 65%),
+    linear-gradient(300deg, transparent 40%, rgba(255,255,255,0.04) 55%, transparent 70%);
+  filter: blur(26px);
+  opacity: 0.45;
+  animation: waveFloat 28s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes waveFloat {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-160px) rotate(0.6deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+/* GRAIN */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='1'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
+
+/* ================================================= */
+/* HEADERS */
+/* ================================================= */
+h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 22px;
+  text-align: center;
+  margin-bottom: 38px;
+}
+
+h3 { margin-bottom: 26px; }
+
+/* ================================================= */
+/* PANELS */
+/* ================================================= */
+.card,
+#vehicleListView,
+#vehicleView {
+  background: var(--panel-bg);
+  border-radius: 22px;
+  padding: 28px;
+  margin-bottom: 40px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,0.05),
+    0 30px 60px rgba(0,0,0,0.65);
+}
+
+/* ================================================= */
+/* VEHICLE TITLE */
+/* ================================================= */
+#vehicleTitle {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 18px;
+  text-align: center;
+  letter-spacing: 1.2px;
+  margin: 10px 0 36px;
+  color: var(--accent);
+}
+
+/* ================================================= */
+/* TEXT */
+/* ================================================= */
+p, small, li {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--text-muted);
+}
+
+/* ================================================= */
+/* INPUTS */
+/* ================================================= */
+input, select, textarea {
+  display: block;
+  width: calc(100% - 16px);
+  margin: 0 auto 24px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px solid var(--line-soft);
+  background: rgba(6, 8, 10, 0.95);
+  color: var(--text-main);
+  font-size: 15px;
+  box-sizing: border-box;
+}
+
+/* ================================================= */
+/* BUTTONS */
+/* ================================================= */
+button {
+  width: 100%;
+  padding: 14px 0;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #1a1f25, #0c1015);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--text-main);
+  font-weight: 500;
+  margin-bottom: 28px;
+  cursor: pointer;
+}
+
+/* ================================================= */
+/* VEHICLE LIST – THIN */
+/* ================================================= */
+#vehicles .card {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 16px 0;
+  margin-bottom: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--line-soft);
+}
+
+#vehicles .card:last-child { border-bottom: none; }
+
+#vehicles .card button {
+  width: auto;
+  padding: 10px 16px;
+  font-size: 13px;
+  border-radius: 14px;
+}
+
+/* ================================================= */
+/* HISTORY – THIN + EXPAND */
+/* ================================================= */
+#historyList .card {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line-soft);
+  cursor: pointer;
+}
+
+#historyList .card:last-child { border-bottom: none; }
+
+#historyList .card i,
+#historyList .card br + * { display: none; }
+
+#historyList .card:focus-within i,
+#historyList .card:focus-within br + * {
+  display: block;
+  margin-top: 12px;
+}
+
+/* ================================================= */
+/* OWNER DATES */
+/* ================================================= */
+#ownerOnly {
+  margin-top: 36px;
+  padding-top: 28px;
+  border-top: 1px solid var(--line-soft);
+}
+
+/* WARNING – ≤30 dni */
+.date-warning #ownerOnly {
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-border);
+  border-radius: 18px;
+  padding: 24px;
+}
+
+/* CRITICAL – ≤7 dni / po terminie */
+.date-critical #ownerOnly {
+  background: var(--danger-bg);
+  border: 1px solid var(--danger-border);
+  border-radius: 18px;
+  padding: 24px;
+}
+
+/* ================================================= */
+/* QR */
+/* ================================================= */
+.qr-box img {
+  display: block;
+  margin: 34px auto 14px;
+  border-radius: 14px;
+  background: #fff;
+  padding: 10px;
+}
+
+/* ================================================= */
+/* LOGOUT */
+/* ================================================= */
+#logoutBtn {
+  background: transparent;
+  border: 1px solid var(--danger-border);
+  color: var(--danger-border);
+}
+
+.hidden { display: none; }
+</style>
 </head>
+
 <body>
-<h1>Moto Historia</h1>
-<p>Cyfrowa historia pojazdu dla motocyklistów.</p>
-<p>Kontakt: kontakt@motohistoria.app</p>
+
+<h2>MotoServiceStory</h2>
+
+<div id="login">
+  <input id="email" type="email" placeholder="Email">
+  <button id="loginBtn">Zaloguj (magic link)</button>
+  <p id="loginStatus"></p>
+</div>
+
+<div id="app" class="hidden">
+
+<div id="paywall" class="paywall hidden">
+  <b>🔒 Konto FREE</b><br><br>
+  <button onclick="startSubscription()">Odblokuj PREMIUM – 24,99 zł</button>
+  <p id="paymentStatus"></p>
+</div>
+
+<div id="vehicleListView">
+  <h3>Twoje pojazdy</h3>
+  <input id="vehicleName" placeholder="Nazwa pojazdu">
+  <input id="vehicleMileage" type="number" placeholder="Aktualny przebieg">
+  <button id="addVehicleBtn">Dodaj pojazd</button>
+  <div id="vehicles"></div>
+</div>
+
+<div id="vehicleView" class="hidden">
+
+  <button class="back" id="backBtn" onclick="closeVehicle()">← Wróć do listy</button>
+  <h3 id="vehicleTitle"></h3>
+
+  <button id="generateQrBtn" onclick="generateQR()">Generuj QR kod dla mechanika</button>
+  <div id="qrBox" class="qr-box hidden"></div>
+
+  <!-- PDF DOWNLOAD -->
+  <button onclick="downloadVehiclePdf()">📄 Pobierz historię (PDF)</button>
+
+  <div class="tabs">
+    <button onclick="showTab('entry')">Wpis</button>
+    <button onclick="showTab('history')">Historia</button>
+  </div>
+
+  <div id="entryTab">
+    <select id="type">
+      <option value="olej">Olej</option>
+      <option value="naped">Napęd</option>
+      <option value="opony">Opony</option>
+      <option value="tarcze">Tarcze hamulcowe</option>
+      <option value="klocki">Klocki hamulcowe</option>
+      <option value="plyn">Płyn hamulcowy</option>
+      <option value="lagi">Olej w lagach</option>
+      <option value="mechaniczne">Naprawy mechaniczne</option>
+    </select>
+
+    <input id="title" placeholder="Tytuł">
+    <input id="mileage" type="number" placeholder="Przebieg">
+    <input id="date" type="date">
+    <textarea id="note" placeholder="Notatka"></textarea>
+
+    <button onclick="saveEntry()">Zapisz wpis</button>
+  </div>
+
+  <div id="historyTab" class="hidden">
+    <div id="historyList"></div>
+  </div>
+
+</div>
+
+<button onclick="logout()" id="logoutBtn">Wyloguj</button>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://thmcpoehpycqfbgpdjyf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRobWNwb2VocHljcWZiZ3BkanlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg4Njc5NTYsImV4cCI6MjA4NDQ0Mzk1Nn0.m4CHKbi6nDSlY_WZdiCZCXKt97tY9uICsbAGSvYHFBw';
+const db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let currentUser = null;
+let currentVehicleId = null;
+let currentVehicleName = null; // ← DODAJ TO
+let historyData = [];
+let userPlan = 'free';
+
+/* ===== LOGIN ===== */
+loginBtn.onclick = async () => {
+  const { error } = await db.auth.signInWithOtp({
+    email: email.value,
+    options: { emailRedirectTo: location.pathname }
+  });
+  loginStatus.innerText = error ? error.message : 'Sprawdź email';
+};
+
+async function bootstrap() {
+  const { data } = await db.auth.getSession();
+  if (data.session?.user) initApp(data.session.user);
+}
+bootstrap();
+
+db.auth.onAuthStateChange((_, session) => {
+  if (session?.user) initApp(session.user);
+});
+
+async function initApp(user) {
+  currentUser = user;
+  login.classList.add('hidden');
+  app.classList.remove('hidden');
+
+  const { data } = await db
+    .from('profiles')
+    .select('plan')
+    .eq('id', user.id)
+    .single();
+
+  userPlan = data?.plan || 'free';
+  paywall.classList.toggle('hidden', userPlan === 'premium');
+
+  loadVehicles();
+}
+
+/* ===== VEHICLES ===== */
+async function loadVehicles() {
+  const { data } = await db.from('vehicles').select('*');
+  vehicles.innerHTML = '';
+  data.forEach(v => {
+    vehicles.innerHTML += `
+      <div class="card">
+        <b>${v.name}</b> (${v.current_mileage} km)<br>
+        <button onclick="openVehicle(${JSON.stringify(v).replace(/"/g,'&quot;')})">Otwórz</button>
+      </div>
+    `;
+  });
+}
+
+addVehicleBtn.onclick = async () => {
+  if (userPlan === 'free') {
+    const { data } = await db.from('vehicles').select('id');
+    if (data.length >= 1) {
+      alert('Konto FREE: maksymalnie 1 pojazd');
+      return;
+    }
+  }
+
+  await db.from('vehicles').insert({
+    name: vehicleName.value,
+    current_mileage: vehicleMileage.value
+  });
+
+  vehicleName.value = vehicleMileage.value = '';
+  loadVehicles();
+};
+
+/* ===== QR ADD ===== */
+function generateQR() {
+  const url =
+    `${location.origin}${location.pathname}?vehicle=${currentVehicleId}&mode=mechanic`;
+
+  qrBox.innerHTML = `
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}">
+    <small>Zeskanuj – wpis dla mechanika</small>
+  `;
+  qrBox.classList.remove('hidden');
+}
+
+/* ===== VEHICLE VIEW ===== */
+function openVehicle(vehicle) {
+  currentVehicleId = vehicle.id;
+  currentVehicleName = vehicle.name; // ← KLUCZOWA LINIJKA
+  vehicleTitle.innerText = vehicle.name;
+  vehicleListView.classList.add('hidden');
+  vehicleView.classList.remove('hidden');
+  showTab('entry');
+}
+
+
+function closeVehicle() {
+  vehicleView.classList.add('hidden');
+  vehicleListView.classList.remove('hidden');
+}
+
+/* ===== HISTORY ===== */
+async function loadHistory() {
+  const { data } = await db
+    .from('service_reports')
+    .select('*')
+    .eq('vehicle_id', currentVehicleId);
+
+  historyData = data || [];
+  historyList.innerHTML = historyData.map(r => `
+    <div class="card">
+      <b>${r.date}</b> – ${r.type}<br>
+      ${r.note || ''}
+    </div>
+  `).join('');
+}
+
+function showTab(tab) {
+  entryTab.classList.toggle('hidden', tab !== 'entry');
+  historyTab.classList.toggle('hidden', tab !== 'history');
+  if (tab === 'history') loadHistory();
+}
+
+/* ===== ENTRY ===== */
+async function saveEntry() {
+  if (userPlan === 'free') {
+    const { data } = await db
+      .from('service_reports')
+      .select('id')
+      .eq('vehicle_id', currentVehicleId);
+
+    if (data.length >= 2) {
+      alert('Konto FREE: maksymalnie 2 wpisy historii');
+      return;
+    }
+  }
+
+  await db.from('service_reports').insert({
+    vehicle_id: currentVehicleId,
+    type: type.value,
+    title: type.value === 'mechaniczne' ? title.value : null,
+    mileage: mileage.value,
+    date: date.value,
+    note: note.value
+  });
+
+  title.value = mileage.value = date.value = note.value = '';
+  loadHistory();
+}
+
+/* ===== STRIPE (JEDYNA ZMIANA) ===== */
+async function startSubscription() {
+  paymentStatus.innerText = 'Przekierowanie do płatności…';
+
+  const { data, error } = await db.functions.invoke('create_checkout');
+
+  if (error) {
+    paymentStatus.innerText = 'Błąd płatności';
+    console.error(error);
+    return;
+  }
+
+  if (data?.url) {
+    location.href = data.url;
+  }
+}
+
+/* ===== PDF DOWNLOAD ===== */
+async function downloadVehiclePdf() {
+  if (!currentVehicleId) {
+    alert('Brak pojazdu');
+    return;
+  }
+
+  // Supabase SDK zajmuje się auth i CORS
+  const { data, error } = await db.functions.invoke(
+    'generate-vehicle-pdf-v2',
+    {
+      body: {
+        vehicle_id: currentVehicleId,
+        vehicle_name: currentVehicleName
+      }
+    }
+  );
+
+  if (error) {
+    console.error('PDF ERROR:', error);
+    alert('Błąd generowania PDF');
+    return;
+  }
+
+  // invoke() zwraca ArrayBuffer dla binary
+  const blob = new Blob([data], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'historia-pojazdu.pdf';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  URL.revokeObjectURL(url);
+}
+
+
+
+
+
+/* ===== LOGOUT ===== */
+async function logout() {
+  await db.auth.signOut();
+  location.reload();
+}
+</script>
+
 </body>
 </html>
+
