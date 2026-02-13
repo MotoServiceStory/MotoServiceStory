@@ -260,13 +260,15 @@ button {
 <div id="login">
   <input id="email" type="email" placeholder="Email">
 
-  <div style="font-size:12px; margin:15px 0;">
-    <input type="checkbox" id="acceptLoginTerms" style="margin-right:6px;">
-    Akceptuję 
-    <a href="/regulamin.html" target="_blank">Regulamin</a> 
-    oraz 
-    <a href="/polityka-prywatnosci.html" target="_blank">Politykę prywatności</a>
-  </div>
+  <label class="checkbox-row">
+    <input type="checkbox" id="acceptLoginTerms">
+    <span>
+      Akceptuję 
+      <a href="/regulamin.html" target="_blank">Regulamin</a> 
+      oraz 
+      <a href="/polityka-prywatnosci.html" target="_blank">Politykę prywatności</a>
+    </span>
+  </label>
 
   <button id="loginBtn">Zaloguj (magic link)</button>
   <p id="loginStatus"></p>
@@ -278,18 +280,23 @@ button {
 <div id="paywall" class="paywall hidden">
   <b>🔒 Konto FREE</b><br><br>
 
-  <div style="font-size:12px; margin-bottom:15px; opacity:0.8;">
-    <input type="checkbox" id="acceptTerms" style="margin-right:6px;">
-    Akceptuję 
-    <a href="/regulamin.html" target="_blank" style="color:#7f9db4;">Regulamin</a> 
-    oraz 
-    <a href="/polityka-prywatnosci.html" target="_blank" style="color:#7f9db4;">Politykę prywatności</a>
-  </div>
+  <label class="checkbox-row">
+    <input type="checkbox" id="acceptTerms">
+    <span>
+      Akceptuję 
+      <a href="/regulamin.html" target="_blank">Regulamin</a> 
+      oraz 
+      <a href="/polityka-prywatnosci.html" target="_blank">Politykę prywatności</a>
+    </span>
+  </label>
 
-  <button onclick="startSubscription()">Odblokuj PREMIUM – subskrypcja roczna</button>
+  <button onclick="startSubscription()">
+    Odblokuj PREMIUM – subskrypcja roczna
+  </button>
 
   <p id="paymentStatus"></p>
 </div>
+
 
 <div id="vehicleListView">
   <h3>Twoje pojazdy</h3>
