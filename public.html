@@ -187,30 +187,49 @@ async function loadHistory() {
 
 async function addEntry() {
 
-  const res = await fetch(
-    `${SUPABASE_URL}/functions/v1/add-public-entry`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": SUPABASE_KEY
-      },
-      body: JSON.stringify({
-        token,
-        type: type.value,
-        title: type.value === 'mechaniczne' ? title.value : null,
-        mileage: mileage.value,
-        date: date.value,
-        note: note.value
-      })
-    }
-  );
+  status.innerText = "Zapisywanie...";
 
- if (!res.ok) {
-  const msg = await res.text();
-  status.innerText = msg;
-  return;
+  try {
+
+    const res = await fetch(
+      `${SUPABASE_URL}/functions/v1/add-public-entry`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": SUPABASE_KEY
+        },
+        body: JSON.stringify({
+          token,
+          type: type.value,
+          title: type.value === 'mechaniczne' ? title.value : null,
+          mileage: mileage.value,
+          date: date.value,
+          note: note.value
+        })
+      }
+    );
+
+    const text = await res.text();
+
+    console.log("STATUS:", res.status);
+    console.log("BODY:", text);
+
+    if (!res.ok) {
+      status.innerText = text || "Błąd zapisu";
+      return;
+    }
+
+    status.innerText = "Zapisano ✔";
+    type.value = mileage.value = date.value = note.value = title.value = "";
+    loadHistory();
+
+  } catch (err) {
+    console.error(err);
+    status.innerText = "Błąd połączenia";
+  }
 }
+
 
 
   status.innerText = "Zapisano ✔";
