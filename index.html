@@ -443,24 +443,26 @@ async function loadVehicles() {
 
 addVehicleBtn.onclick = async () => {
 
-  if (!currentUser) {
-    alert('Brak sesji użytkownika');
+  const { data: { session } } = await db.auth.getSession();
+
+  if (!session) {
+    alert("Brak sesji użytkownika");
     return;
   }
+
+  const userId = session.user.id;
 
   if (!vehicleName.value || !vehicleMileage.value) {
-    alert('Uzupełnij nazwę i przebieg');
+    alert("Uzupełnij nazwę i przebieg");
     return;
   }
-
-addVehicleBtn.onclick = async () => {
 
   // LIMIT FREE – tylko 1 pojazd
   if (userPlan === 'free') {
     const { data } = await db
       .from('vehicles')
       .select('id')
-      .eq('user_id', currentUser.id);
+      .eq('user_id', userId);
 
     if ((data?.length || 0) >= 1) {
       alert('Konto FREE: maksymalnie 1 pojazd');
@@ -468,18 +470,17 @@ addVehicleBtn.onclick = async () => {
     }
   }
 
-  // KLUCZOWA ZMIANA – dodajemy user_id
   const { error } = await db
     .from('vehicles')
     .insert({
       name: vehicleName.value,
       current_mileage: vehicleMileage.value,
-      user_id: currentUser.id
+      user_id: userId
     });
 
   if (error) {
     console.error(error);
-    alert('Błąd dodawania pojazdu');
+    alert(error.message);
     return;
   }
 
@@ -488,6 +489,7 @@ addVehicleBtn.onclick = async () => {
 
   loadVehicles();
 };
+
 
 
 
