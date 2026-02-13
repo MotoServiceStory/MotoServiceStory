@@ -405,14 +405,35 @@ addVehicleBtn.onclick = async () => {
 };
 
 /* ===== QR ADD ===== */
-function generateQR() {
-  const url =
-    `${location.origin}${location.pathname}?vehicle=${currentVehicleId}&mode=mechanic`;
+async function generateQR() {
+
+  if (!currentVehicleId) {
+    alert("Brak pojazdu");
+    return;
+  }
+
+  // Pobieramy public_token z bazy
+  const { data: vehicle, error } = await db
+    .from("vehicles")
+    .select("public_token")
+    .eq("id", currentVehicleId)
+    .single();
+
+  if (!vehicle || error) {
+    alert("Nie można pobrać tokenu");
+    return;
+  }
+
+  const publicUrl = `${location.origin}/public.html?token=${vehicle.public_token}`;
 
   qrBox.innerHTML = `
-    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}">
-    <small>Zeskanuj – wpis dla mechanika</small>
+    <img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(publicUrl)}">
+    <small>Zeskanuj – publiczna historia pojazdu</small>
+    <div style="margin-top:10px;font-size:12px;word-break:break-all;">
+      ${publicUrl}
+    </div>
   `;
+
   qrBox.classList.remove('hidden');
 }
 
