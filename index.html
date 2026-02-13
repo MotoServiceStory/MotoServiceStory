@@ -522,20 +522,49 @@ async function saveEntry() {
   loadHistory();
 }
 
-/* ===== STRIPE (JEDYNA ZMIANA) ===== */
+/* ===== STRIPE ===== */
 async function startSubscription() {
-  paymentStatus.innerText = 'Przekierowanie do płatności…';
 
-  const { data, error } = await db.functions.invoke('create_checkout');
+  const acceptCheckbox = document.getElementById("acceptTerms");
 
-  if (error) {
-    paymentStatus.innerText = 'Błąd płatności';
-    console.error(error);
+  // 1️⃣ Sprawdzenie akceptacji regulaminu
+  if (!acceptCheckbox || !acceptCheckbox.checked) {
+    paymentStatus.innerText = "Musisz zaakceptować Regulamin i Politykę prywatności.";
+    paymentStatus.style.color = "#ff0000";
+    paymentStatus.style.fontWeight = "900";
     return;
   }
 
-  if (data?.url) {
-    location.href = data.url;
+  // 2️⃣ Informacja o przekierowaniu
+  paymentStatus.innerText = "Przekierowanie do płatności…";
+  paymentStatus.style.color = "#ffffff";
+  paymentStatus.style.fontWeight = "500";
+
+  try {
+
+    const { data, error } = await db.functions.invoke("create_checkout");
+
+    if (error) {
+      console.error(error);
+      paymentStatus.innerText = "Błąd płatności. Spróbuj ponownie.";
+      paymentStatus.style.color = "#ff0000";
+      paymentStatus.style.fontWeight = "900";
+      return;
+    }
+
+    if (data?.url) {
+      location.href = data.url;
+    } else {
+      paymentStatus.innerText = "Nie udało się rozpocząć płatności.";
+      paymentStatus.style.color = "#ff0000";
+      paymentStatus.style.fontWeight = "900";
+    }
+
+  } catch (err) {
+    console.error(err);
+    paymentStatus.innerText = "Wystąpił błąd połączenia.";
+    paymentStatus.style.color = "#ff0000";
+    paymentStatus.style.fontWeight = "900";
   }
 }
 
