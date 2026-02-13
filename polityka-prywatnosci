@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<title>Polityka Prywatności – MotoServiceStory</title>
+<style>
+body {
+  max-width: 900px;
+  margin: 40px auto;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  padding: 0 20px;
+}
+h1, h2 {
+  margin-top: 40px;
+}
+</style>
+</head>
+<body>
+
+<h1>Polityka Prywatności aplikacji MotoServiceStory</h1>
+
+<p>Niniejsza Polityka Prywatności określa zasady przetwarzania danych osobowych użytkowników aplikacji MotoServiceStory.</p>
+
+<h2>1. Administrator danych</h2>
+
+<p>Administratorem danych osobowych jest właściciel aplikacji MotoServiceStory – osoba fizyczna.  
+Kontakt: motoservicestory@gmail.com</p>
+
+<h2>2. Zakres przetwarzanych danych</h2>
+
+<p>W ramach korzystania z aplikacji przetwarzane mogą być następujące dane:</p>
+
+<ul>
+<li>Adres e-mail użytkownika (logowanie)</li>
+<li>Dane dotyczące pojazdu (nazwa, przebieg, historia serwisowa)</li>
+<li>Dane techniczne urządzenia (w zakresie niezbędnym do działania aplikacji)</li>
+</ul>
+
+<p>Aplikacja nie przetwarza danych wrażliwych.</p>
+
+<h2>3. Cel przetwarzania danych</h2>
+
+<p>Dane przetwarzane są w celu:</p>
+
+<ul>
+<li>utworzenia i obsługi konta użytkownika,</li>
+<li>umożliwienia zapisywania historii pojazdu,</li>
+<li>realizacji subskrypcji Premium,</li>
+<li>zapewnienia działania aplikacji.</li>
+</ul>
+
+<h2>4. Podstawa prawna przetwarzania</h2>
+
+<p>Dane przetwarzane są na podstawie:</p>
+
+<ul>
+<li>art. 6 ust. 1 lit. b RODO – realizacja umowy (korzystanie z aplikacji),</li>
+<li>art. 6 ust. 1 lit. f RODO – prawnie uzasadniony interes administratora (zapewnienie działania usługi).</li>
+</ul>
+
+<h2>5. Podmioty przetwarzające dane</h2>
+
+<p>Dane mogą być przetwarzane przez zewnętrznych dostawców usług:</p>
+
+<ul>
+<li>Supabase – infrastruktura bazy danych i uwierzytelnianie użytkowników,</li>
+<li>Stripe – obsługa płatności (w przypadku subskrypcji Premium),</li>
+<li>Google (w przypadku aplikacji mobilnej dostępnej w Google Play).</li>
+</ul>
+
+<p>Dane nie są sprzedawane osobom trzecim.</p>
+
+<h2>6. Publiczny dostęp do historii pojazdu</h2>
+
+<p>Użytkownik może wygenerować publiczny link do historii pojazdu (np. poprzez kod QR).  
+Osoba posiadająca link może przeglądać historię pojazdu i dodawać wpisy.</p>
+
+<p>Użytkownik ponosi odpowiedzialność za udostępnienie publicznego linku.</p>
+
+<h2>7. Okres przechowywania danych</h2>
+
+<p>Dane przechowywane są przez czas trwania konta użytkownika lub do momentu jego usunięcia.</p>
+
+<h2>8. Prawa użytkownika</h2>
+
+<p>Użytkownik ma prawo do:</p>
+
+<ul>
+<li>dostępu do swoich danych,</li>
+<li>ich poprawiania,</li>
+<li>usunięcia danych,</li>
+<li>ograniczenia przetwarzania,</li>
+<li>wniesienia sprzeciwu wobec przetwarzania,</li>
+<li>wniesienia skargi do Prezesa Urzędu Ochrony Danych Osobowych.</li>
+</ul>
+
+<h2>9. Bezpieczeństwo danych</h2>
+
+<p>Dane przechowywane są w infrastrukturze chmurowej z zastosowaniem standardowych zabezpieczeń technicznych i organizacyjnych.</p>
+
+<h2>10. Zmiany Polityki Prywatności</h2>
+
+<p>Administrator zastrzega sobie prawo do zmiany niniejszej Polityki Prywatności.  
+Aktualna wersja dokumentu dostępna jest na stronie internetowej aplikacji.</p>
+
+<p><strong>Kontakt:</strong> motoservicestory@gmail.com</p>
+
+</body>
+</html>
