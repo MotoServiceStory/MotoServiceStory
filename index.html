@@ -337,12 +337,13 @@ let userPlan = 'free';
 
 /* ===== LOGIN ===== */
 loginBtn.onclick = async () => {
+  const redirectUrl = window.location.origin + window.location.pathname;
+
   const { error } = await db.auth.signInWithOtp({
     email: email.value,
-    options: { emailRedirectTo: location.pathname }
+    options: { emailRedirectTo: redirectUrl }
   });
-  loginStatus.innerText = error ? error.message : 'Sprawdź email';
-};
+
 
 async function bootstrap() {
   const { data } = await db.auth.getSession();
