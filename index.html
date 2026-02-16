@@ -354,21 +354,26 @@ button {
 
 <div id="vehicleView" class="hidden">
 
-  <button class="back" id="backBtn" onclick="closeVehicle()">← Wróć do listy</button>
+  <button class="back" id="backBtn" onclick="closeVehicle()">
+    ← Wróć do listy
+  </button>
+
   <h3 id="vehicleTitle"></h3>
 
-  <button id="generateQrBtn" onclick="generateQR()">Generuj QR kod dla mechanika</button>
-  <div id="qrBox" class="qr-box hidden"></div>
-
-  <!-- PDF DOWNLOAD -->
-  <button onclick="downloadVehiclePdf()">📄 Pobierz historię (PDF)</button>
-
-  <div class="tabs">
-    <button onclick="showTab('entry')">Wpis</button>
-    <button onclick="showTab('history')">Historia</button>
+  <!-- ACTION BUTTONS ROW -->
+  <div class="action-row">
+    <button class="action-btn" onclick="generateQR()">QR</button>
+    <button class="action-btn" onclick="downloadVehiclePdf()">PDF</button>
+    <button class="action-btn" onclick="showTab('entry')">Wpis</button>
+    <button class="action-btn" onclick="showTab('history')">Historia</button>
   </div>
 
+  <!-- QR BOX -->
+  <div id="qrBox" class="qr-box hidden"></div>
+
+  <!-- ENTRY TAB -->
   <div id="entryTab">
+
     <select id="type">
       <option value="olej">Olej</option>
       <option value="naped">Napęd</option>
@@ -386,13 +391,16 @@ button {
     <textarea id="note" placeholder="Notatka"></textarea>
 
     <button onclick="saveEntry()">Zapisz wpis</button>
+
   </div>
 
+  <!-- HISTORY TAB -->
   <div id="historyTab" class="hidden">
     <div id="historyList"></div>
   </div>
 
 </div>
+
 
   <div style="text-align:center; font-size:12px; margin-top:30px; opacity:0.7;">
   <a href="/regulamin.html" target="_blank" style="color:#aab3bb; text-decoration:none; margin-right:10px;">
