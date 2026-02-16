@@ -31,7 +31,7 @@
 }
 
 /* ================================================= */
-/* BODY / BACKGROUND */
+/* BODY */
 /* ================================================= */
 body {
   margin: 0;
@@ -111,8 +111,37 @@ h3 { margin-bottom: 26px; }
   font-size: 15px;
   text-align: center;
   letter-spacing: 1.2px;
-  margin: 10px 0 36px;
+  margin: 10px 0 20px;
   color: var(--accent);
+}
+
+/* ================================================= */
+/* ACTION ROW – NOWE */
+/* ================================================= */
+.action-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.action-btn {
+  padding: 10px 0;
+  font-size: 12px;
+  border-radius: 14px;
+  margin: 0;
+  background: linear-gradient(180deg, #1a1f25, #0c1015);
+  border: 1px solid rgba(255,255,255,0.12);
+  transition: 0.2s ease;
+}
+
+.action-btn:hover {
+  background: linear-gradient(180deg, #222831, #12161b);
+}
+
+.action-btn.active {
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
 }
 
 /* ================================================= */
@@ -185,14 +214,13 @@ button {
 }
 
 /* ================================================= */
-/* GOOGLE BUTTON – NOWE */
+/* GOOGLE BUTTON */
 /* ================================================= */
 .google-btn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-
   background: #ffffff;
   color: #000000;
   border: 1px solid #dcdcdc;
@@ -248,17 +276,8 @@ button {
 #historyList .card:last-child { border-bottom: none; }
 
 /* ================================================= */
-/* LOGOUT */
+/* HISTORY DELETE ICON */
 /* ================================================= */
-#logoutBtn {
-  background: transparent;
-  border: 1px solid var(--danger-border);
-  color: var(--danger-border);
-}
-/* ================================================= */
-/* HISTORY ROW WITH DELETE ICON */
-/* ================================================= */
-
 .history-row {
   display: flex;
   justify-content: space-between;
@@ -271,7 +290,7 @@ button {
 
 .history-delete {
   cursor: pointer;
-  font-size: 30px;
+  font-size: 20px;
   color: #ff3b3b;
   opacity: 0.7;
   transition: 0.2s ease;
@@ -282,8 +301,18 @@ button {
   transform: scale(1.1);
 }
 
+/* ================================================= */
+/* LOGOUT */
+/* ================================================= */
+#logoutBtn {
+  background: transparent;
+  border: 1px solid var(--danger-border);
+  color: var(--danger-border);
+}
+
 .hidden { display: none; }
 </style>
+
 
 
 </head>
