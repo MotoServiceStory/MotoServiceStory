@@ -528,13 +528,46 @@ async function loadVehicles() {
     vehicles.innerHTML += `
       <div class="card">
         <b>${v.name}</b> (${v.current_mileage} km)<br>
-        <button onclick="openVehicle(${JSON.stringify(v).replace(/"/g,'&quot;')})">
-          Otwórz
-        </button>
+
+        <div style="margin-top:10px; display:flex; gap:10px;">
+          <button onclick="openVehicle(${JSON.stringify(v).replace(/"/g,'&quot;')})">
+            Otwórz
+          </button>
+
+          <button onclick="deleteVehicle('${v.id}')" 
+            style="background:#1a0f12;border:1px solid #ff3b3b;color:#ff3b3b;">
+            Usuń
+          </button>
+        </div>
       </div>
     `;
   });
 }
+
+
+/* ===== DELETE VEHICLE ===== */
+async function deleteVehicle(vehicleId) {
+
+  const confirmDelete = confirm(
+    "Czy na pewno chcesz usunąć pojazd?\n\nTa operacja usunie również wszystkie wpisy serwisowe."
+  );
+
+  if (!confirmDelete) return;
+
+  const { error } = await db
+    .from('vehicles')
+    .delete()
+    .eq('id', vehicleId);
+
+  if (error) {
+    console.error(error);
+    alert("Błąd usuwania pojazdu");
+    return;
+  }
+
+  loadVehicles();
+}
+
 
 
 addVehicleBtn.onclick = async () => {
