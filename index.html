@@ -991,6 +991,80 @@ async function logout() {
   await db.auth.signOut();
   location.reload();
 }
+  /* ===== VEHICLE STATUS ===== */
+
+async function loadVehicleStatus() {
+
+  const { data, error } = await db
+    .from('vehicles')
+    .select('inspection_date, insurance_oc_date, insurance_ac_date')
+    .eq('id', currentVehicleId)
+    .single();
+
+  if (error || !data) return;
+
+  document.getElementById("vehicleStatus").classList.remove("hidden");
+
+  updateStatus("inspection", data.inspection_date);
+  updateStatus("oc", data.insurance_oc_date);
+  updateStatus("ac", data.insurance_ac_date);
+}
+
+function updateStatus(type, dateValue) {
+
+  const dateEl = document.getElementById(
+    type === "inspection" ? "inspectionDate" :
+    type === "oc" ? "ocDate" :
+    "acDate"
+  );
+
+  const dotEl = document.getElementById(
+    type === "inspection" ? "inspectionDot" :
+    type === "oc" ? "ocDot" :
+    "acDot"
+  );
+
+  if (!dateValue) {
+    dateEl.innerText = "—";
+    dotEl.className = "status-dot";
+    return;
+  }
+
+  dateEl.innerText = dateValue;
+
+  const today = new Date();
+  const target = new Date(dateValue);
+
+  // różnica w dniach
+  const diff = Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+
+  if (diff <= 30) {
+    dotEl.className = "status-dot alert";
+  } else {
+    dotEl.className = "status-dot ok";
+  }
+}
+
+async function setDate(type) {
+
+  const value = prompt("Podaj datę (YYYY-MM-DD)");
+  if (!value) return;
+
+  const column =
+    type === "inspection" ? "inspection_date" :
+    type === "oc" ? "insurance_oc_date" :
+    "insurance_ac_date";
+
+  const { error } = await db
+    .from("vehicles")
+    .update({ [column]: value })
+    .eq("id", currentVehicleId);
+
+  if (!error) {
+    loadVehicleStatus();
+  }
+}
+
 </script>
 
 </body>
