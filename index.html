@@ -387,41 +387,68 @@ button {
     ← Wróć do listy
   </button>
 
-  <h3 id="vehicleTitle"></h3>
+ <h3 id="vehicleTitle"></h3>
 
-  <!-- ACTION BUTTONS ROW -->
-  <div class="action-row">
-    <button class="action-btn" onclick="generateQR()">QR</button>
-    <button class="action-btn" onclick="downloadVehiclePdf()">PDF</button>
-    <button class="action-btn" onclick="showTab('entry')">Wpis</button>
-    <button class="action-btn" onclick="showTab('history')">Historia</button>
+<!-- STATUS BOX -->
+<div id="vehicleStatus" class="status-box hidden">
+
+  <div class="status-row">
+    <span>PT</span>
+    <span id="inspectionDate">—</span>
+    <span id="inspectionDot" class="status-dot"></span>
+    <button onclick="setDate('inspection')">Ustaw</button>
   </div>
 
-  <!-- QR BOX -->
-  <div id="qrBox" class="qr-box hidden"></div>
-
-  <!-- ENTRY TAB -->
-  <div id="entryTab">
-
-    <select id="type">
-      <option value="olej">Olej</option>
-      <option value="naped">Napęd</option>
-      <option value="opony">Opony</option>
-      <option value="tarcze">Tarcze hamulcowe</option>
-      <option value="klocki">Klocki hamulcowe</option>
-      <option value="plyn">Płyn hamulcowy</option>
-      <option value="lagi">Olej w lagach</option>
-      <option value="mechaniczne">Naprawy mechaniczne</option>
-    </select>
-
-    <input id="title" placeholder="Tytuł">
-    <input id="mileage" type="number" placeholder="Przebieg">
-    <input id="date" type="date">
-    <textarea id="note" placeholder="Notatka"></textarea>
-
-    <button onclick="saveEntry()">Zapisz wpis</button>
-
+  <div class="status-row">
+    <span>OC</span>
+    <span id="ocDate">—</span>
+    <span id="ocDot" class="status-dot"></span>
+    <button onclick="setDate('oc')">Ustaw</button>
   </div>
+
+  <div class="status-row">
+    <span>AC</span>
+    <span id="acDate">—</span>
+    <span id="acDot" class="status-dot"></span>
+    <button onclick="setDate('ac')">Ustaw</button>
+  </div>
+
+</div>
+
+<!-- ACTION BUTTONS ROW -->
+<div class="action-row">
+  <button class="action-btn" onclick="generateQR()">QR</button>
+  <button class="action-btn" onclick="downloadVehiclePdf()">PDF</button>
+  <button class="action-btn" onclick="showTab('entry')">Wpis</button>
+  <button class="action-btn" onclick="showTab('history')">Historia</button>
+</div>
+
+<!-- QR BOX -->
+<div id="qrBox" class="qr-box hidden"></div>
+
+<!-- ENTRY TAB -->
+<div id="entryTab">
+
+  <select id="type">
+    <option value="olej">Olej</option>
+    <option value="naped">Napęd</option>
+    <option value="opony">Opony</option>
+    <option value="tarcze">Tarcze hamulcowe</option>
+    <option value="klocki">Klocki hamulcowe</option>
+    <option value="plyn">Płyn hamulcowy</option>
+    <option value="lagi">Olej w lagach</option>
+    <option value="mechaniczne">Naprawy mechaniczne</option>
+  </select>
+
+  <input id="title" placeholder="Tytuł">
+  <input id="mileage" type="number" placeholder="Przebieg">
+  <input id="date" type="date">
+  <textarea id="note" placeholder="Notatka"></textarea>
+
+  <button onclick="saveEntry()">Zapisz wpis</button>
+
+</div>
+
 
   <!-- HISTORY TAB -->
   <div id="historyTab" class="hidden">
