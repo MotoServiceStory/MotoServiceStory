@@ -677,20 +677,60 @@ function closeVehicle() {
 
 /* ===== HISTORY ===== */
 async function loadHistory() {
-  const { data } = await db
+
+  const { data, error } = await db
     .from('service_reports')
     .select('*')
-    .eq('vehicle_id', currentVehicleId);
+    .eq('vehicle_id', currentVehicleId)
+    .order('date', { ascending: false });
+
+  if (error) {
+    console.error(error);
+    return;
+  }
 
   historyData = data || [];
+
   historyList.innerHTML = historyData.map(r => `
     <div class="card">
       <b>${r.date}</b> – ${r.type}<br>
       ${r.note || ''}
+
+      <div style="margin-top:12px;">
+        <button 
+          onclick="deleteEntry('${r.id}')" 
+          style="background:#1a0f12;border:1px solid #ff3b3b;color:#ff3b3b;">
+          Usuń wpis
+        </button>
+      </div>
     </div>
   `).join('');
 }
 
+
+/* ===== DELETE ENTRY ===== */
+async function deleteEntry(entryId) {
+
+  const confirmDelete = confirm("Czy na pewno chcesz usunąć ten wpis?");
+
+  if (!confirmDelete) return;
+
+  const { error } = await db
+    .from('service_reports')
+    .delete()
+    .eq('id', entryId);
+
+  if (error) {
+    console.error(error);
+    alert("Błąd usuwania wpisu");
+    return;
+  }
+
+  loadHistory();
+}
+
+
+/* ===== TABS ===== */
 function showTab(tab) {
   entryTab.classList.toggle('hidden', tab !== 'entry');
   historyTab.classList.toggle('hidden', tab !== 'history');
